@@ -133,7 +133,7 @@
       downloadBtn.addEventListener("click", function (event) {
         event.preventDefault();
         if (qrCode) {
-          qrCode.download({ name: "qr-code", extension: "svg" });
+          qrCode.download({ name: "qr-code", extension: "png" });
         }
       });
 
@@ -150,7 +150,7 @@
         qrCode = new QRCodeStyling({
           width: width,
           height: height,
-          type: "svg",
+          type: "png",
           data: data,
           image:
             fileInput.files.length > 0
