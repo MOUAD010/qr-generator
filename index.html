@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dynamic QR Code Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"
+    ></script>
+  </head>
+  <body class="bg-[#f5f5f5]">
+    <div class="container mx-auto p-8">
+      <h1 class="text-2xl font-bold mb-6 text-center">
+        Maxmind QR Code Generator
+      </h1>
+
+      <!-- Main Section -->
+      <div class="flex justify-center items-center space-x-10">
+        <!-- Form Section -->
+        <form
+          id="qrForm"
+          class="bg-white shadow-lg border border-gray-200 shadow-lg rounded-lg p-6 space-y-4 w-1/2"
+        >
+          <div>
+            <label for="data" class="block text-lg font-semibold"
+              >QR Code Data:</label
+            >
+            <input
+              id="data"
+              name="data"
+              type="text"
+              class="border rounded-md w-full p-2"
+              placeholder="Enter data (e.g. URL)"
+              required
+            />
+          </div>
+          <div>
+            <label for="image" class="block text-lg font-semibold"
+              >Upload Image (Optional):</label
+            >
+            <input
+              id="image"
+              name="image"
+              type="file"
+              accept="image/*"
+              class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none p-2"
+            />
+          </div>
+          <div>
+            <label for="width" class="block text-lg font-semibold"
+              >Width (px):</label
+            >
+            <input
+              id="width"
+              name="width"
+              type="number"
+              class="border rounded-md w-full p-2"
+              placeholder="Enter width"
+              value="200"
+              required
+            />
+          </div>
+          <div>
+            <label for="height" class="block text-lg font-semibold"
+              >Height (px):</label
+            >
+            <input
+              id="height"
+              name="height"
+              type="number"
+              class="border rounded-md w-full p-2"
+              placeholder="Enter height"
+              value="200"
+              required
+            />
+          </div>
+          <div>
+            <label for="margin" class="block text-lg font-semibold"
+              >Image Margin (px):</label
+            >
+            <input
+              id="margin"
+              name="margin"
+              type="number"
+              class="border rounded-md w-full p-2"
+              placeholder="Enter margin"
+              value="5"
+              required
+            />
+          </div>
+          <div>
+            <label for="dotColor" class="block text-lg font-semibold"
+              >Dot Color:</label
+            >
+            <input
+              id="dotColor"
+              name="dotColor"
+              type="color"
+              class="border rounded-md w-full p-2"
+              value="#4267b2"
+            />
+          </div>
+
+          <button
+            id="downloadBtn"
+            class="bg-green-600 text-white font-bold py-2 px-4 rounded-md w-full hover:bg-green-500 mt-4"
+          >
+            Download QR Code
+          </button>
+        </form>
+
+        <!-- QR Code Display Section -->
+        <div class="w-64 h-64 flex justify-center items-center">
+          <div id="canvas" class="bg-white shadow-lg rounded-lg p-6"></div>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      const form = document.getElementById("qrForm");
+      const downloadBtn = document.getElementById("downloadBtn");
+      let qrCode;
+
+      // Initial QR code creation
+      createQRCode();
+
+      // Add event listeners to form inputs
+      form.addEventListener("input", createQRCode);
+      form.addEventListener("change", createQRCode);
+
+      downloadBtn.addEventListener("click", function (event) {
+        event.preventDefault();
+        if (qrCode) {
+          qrCode.download({ name: "qr-code", extension: "svg" });
+        }
+      });
+
+      function createQRCode() {
+        // Get values from the form inputs
+        const data = document.getElementById("data").value || "Example";
+        const fileInput = document.getElementById("image");
+        const width = parseInt(document.getElementById("width").value) || 200;
+        const height = parseInt(document.getElementById("height").value) || 200;
+        const margin = parseInt(document.getElementById("margin").value) || 5;
+        const dotColor = document.getElementById("dotColor").value;
+
+        // Create QR code
+        qrCode = new QRCodeStyling({
+          width: width,
+          height: height,
+          type: "svg",
+          data: data,
+          image:
+            fileInput.files.length > 0
+              ? URL.createObjectURL(fileInput.files[0])
+              : "",
+          dotsOptions: {
+            color: dotColor,
+            type: "rounded",
+          },
+
+          imageOptions: {
+            crossOrigin: "anonymous",
+            margin: margin,
+          },
+        });
+
+        // Clear any previous QR code
+        document.getElementById("canvas").innerHTML = "";
+        qrCode.append(document.getElementById("canvas"));
+      }
+    </script>
+  </body>
+</html>
